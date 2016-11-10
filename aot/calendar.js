@@ -1,13 +1,12 @@
-"use strict";
-var core_1 = require('@angular/core');
-var calendar_service_1 = require('./calendar.service');
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CalendarService } from './calendar.service';
+export var Step;
 (function (Step) {
     Step[Step["QuarterHour"] = 15] = "QuarterHour";
     Step[Step["HalfHour"] = 30] = "HalfHour";
     Step[Step["Hour"] = 60] = "Hour";
-})(exports.Step || (exports.Step = {}));
-var Step = exports.Step;
-var CalendarComponent = (function () {
+})(Step || (Step = {}));
+export var CalendarComponent = (function () {
     function CalendarComponent(calendarService) {
         this.calendarService = calendarService;
         this.eventSource = [];
@@ -26,11 +25,11 @@ var CalendarComponent = (function () {
         this.noEventsLabel = 'No Events';
         this.queryMode = 'local';
         this.step = Step.Hour;
-        this.onCurrentDateChanged = new core_1.EventEmitter();
-        this.onRangeChanged = new core_1.EventEmitter();
-        this.onEventSelected = new core_1.EventEmitter();
-        this.onTimeSelected = new core_1.EventEmitter();
-        this.onTitleChanged = new core_1.EventEmitter();
+        this.onCurrentDateChanged = new EventEmitter();
+        this.onRangeChanged = new EventEmitter();
+        this.onEventSelected = new EventEmitter();
+        this.onTimeSelected = new EventEmitter();
+        this.onTitleChanged = new EventEmitter();
         this.hourParts = 1;
     }
     Object.defineProperty(CalendarComponent.prototype, "currentDate", {
@@ -66,41 +65,40 @@ var CalendarComponent = (function () {
         this.onTitleChanged.emit(title);
     };
     CalendarComponent.decorators = [
-        { type: core_1.Component, args: [{
+        { type: Component, args: [{
                     selector: 'calendar',
                     template: "\n        <div [ngSwitch]=\"calendarMode\">\n            <monthview *ngSwitchCase=\"'month'\"\n                [formatDay]=\"formatDay\"\n                [formatDayHeader]=\"formatDayHeader\"\n                [formatMonthTitle]=\"formatMonthTitle\"\n                [startingDayMonth]=\"startingDayMonth\"\n                [showEventDetail]=\"showEventDetail\"\n                [noEventsLabel]=\"noEventsLabel\"\n                [eventSource]=\"eventSource\"\n                (onRangeChanged)=\"rangeChanged($event)\"\n                (onEventSelected)=\"eventSelected($event)\"\n                (onTimeSelected)=\"timeSelected($event)\"\n                (onTitleChanged)=\"titleChanged($event)\">\n            </monthview>\n            <weekview *ngSwitchCase=\"'week'\"\n                [formatWeekTitle]=\"formatWeekTitle\"\n                [formatWeekViewDayHeader]=\"formatWeekViewDayHeader\"\n                [formatHourColumn]=\"formatHourColumn\"\n                [startingDayWeek]=\"startingDayWeek\"\n                [allDayLabel]=\"allDayLabel\"\n                [hourParts]=\"hourParts\"\n                [eventSource]=\"eventSource\"\n                (onRangeChanged)=\"rangeChanged($event)\"\n                (onEventSelected)=\"eventSelected($event)\"\n                (onTimeSelected)=\"timeSelected($event)\"\n                (onTitleChanged)=\"titleChanged($event)\">\n            </weekview>\n            <dayview *ngSwitchCase=\"'day'\"\n                [formatDayTitle]=\"formatDayTitle\"\n                [formatHourColumn]=\"formatHourColumn\"\n                [allDayLabel]=\"allDayLabel\"\n                [hourParts]=\"hourParts\"\n                [eventSource]=\"eventSource\"\n                (onRangeChanged)=\"rangeChanged($event)\"\n                (onEventSelected)=\"eventSelected($event)\"\n                (onTimeSelected)=\"timeSelected($event)\"\n                (onTitleChanged)=\"titleChanged($event)\">\n            </dayview>\n        </div>\n    ",
                     styles: ["\n        :host > div { height: 100%; }\n    "],
-                    providers: [calendar_service_1.CalendarService]
+                    providers: [CalendarService]
                 },] },
     ];
     CalendarComponent.ctorParameters = [
-        { type: calendar_service_1.CalendarService, },
+        { type: CalendarService, },
     ];
     CalendarComponent.propDecorators = {
-        'currentDate': [{ type: core_1.Input },],
-        'eventSource': [{ type: core_1.Input },],
-        'calendarMode': [{ type: core_1.Input },],
-        'formatDay': [{ type: core_1.Input },],
-        'formatDayHeader': [{ type: core_1.Input },],
-        'formatDayTitle': [{ type: core_1.Input },],
-        'formatWeekTitle': [{ type: core_1.Input },],
-        'formatMonthTitle': [{ type: core_1.Input },],
-        'formatWeekViewDayHeader': [{ type: core_1.Input },],
-        'formatHourColumn': [{ type: core_1.Input },],
-        'showEventDetail': [{ type: core_1.Input },],
-        'startingDayMonth': [{ type: core_1.Input },],
-        'startingDayWeek': [{ type: core_1.Input },],
-        'allDayLabel': [{ type: core_1.Input },],
-        'noEventsLabel': [{ type: core_1.Input },],
-        'queryMode': [{ type: core_1.Input },],
-        'step': [{ type: core_1.Input },],
-        'onCurrentDateChanged': [{ type: core_1.Output },],
-        'onRangeChanged': [{ type: core_1.Output },],
-        'onEventSelected': [{ type: core_1.Output },],
-        'onTimeSelected': [{ type: core_1.Output },],
-        'onTitleChanged': [{ type: core_1.Output },],
+        'currentDate': [{ type: Input },],
+        'eventSource': [{ type: Input },],
+        'calendarMode': [{ type: Input },],
+        'formatDay': [{ type: Input },],
+        'formatDayHeader': [{ type: Input },],
+        'formatDayTitle': [{ type: Input },],
+        'formatWeekTitle': [{ type: Input },],
+        'formatMonthTitle': [{ type: Input },],
+        'formatWeekViewDayHeader': [{ type: Input },],
+        'formatHourColumn': [{ type: Input },],
+        'showEventDetail': [{ type: Input },],
+        'startingDayMonth': [{ type: Input },],
+        'startingDayWeek': [{ type: Input },],
+        'allDayLabel': [{ type: Input },],
+        'noEventsLabel': [{ type: Input },],
+        'queryMode': [{ type: Input },],
+        'step': [{ type: Input },],
+        'onCurrentDateChanged': [{ type: Output },],
+        'onRangeChanged': [{ type: Output },],
+        'onEventSelected': [{ type: Output },],
+        'onTimeSelected': [{ type: Output },],
+        'onTitleChanged': [{ type: Output },],
     };
     return CalendarComponent;
 }());
-exports.CalendarComponent = CalendarComponent;
 //# sourceMappingURL=calendar.js.map

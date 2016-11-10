@@ -1,9 +1,8 @@
-"use strict";
-var core_1 = require('@angular/core');
-var Rx_1 = require('rxjs/Rx');
-var CalendarService = (function () {
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs/Rx';
+export var CalendarService = (function () {
     function CalendarService() {
-        this.currentDateChanged = new Rx_1.Subject();
+        this.currentDateChanged = new Subject();
         this.currentDateChanged$ = this.currentDateChanged.asObservable();
     }
     CalendarService.prototype.setCurrentDateWithoutEvent = function (val) {
@@ -105,10 +104,9 @@ var CalendarService = (function () {
         }
     };
     CalendarService.decorators = [
-        { type: core_1.Injectable },
+        { type: Injectable },
     ];
     CalendarService.ctorParameters = [];
     return CalendarService;
 }());
-exports.CalendarService = CalendarService;
 //# sourceMappingURL=calendar.service.js.map

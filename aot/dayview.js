@@ -1,15 +1,14 @@
-"use strict";
-var common_1 = require('@angular/common');
-var core_1 = require('@angular/core');
-var calendar_service_1 = require('./calendar.service');
-var DayViewComponent = (function () {
+import { DatePipe } from '@angular/common';
+import { Component, HostBinding, Input, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core';
+import { CalendarService } from './calendar.service';
+export var DayViewComponent = (function () {
     function DayViewComponent(calendarService) {
         this.calendarService = calendarService;
         this.class = true;
-        this.onRangeChanged = new core_1.EventEmitter();
-        this.onEventSelected = new core_1.EventEmitter();
-        this.onTimeSelected = new core_1.EventEmitter();
-        this.onTitleChanged = new core_1.EventEmitter();
+        this.onRangeChanged = new EventEmitter();
+        this.onEventSelected = new EventEmitter();
+        this.onTimeSelected = new EventEmitter();
+        this.onTitleChanged = new EventEmitter();
         this.slideOption = {
             runCallbacksOnInit: false,
             loop: true
@@ -182,7 +181,7 @@ var DayViewComponent = (function () {
     };
     DayViewComponent.prototype.getTitle = function () {
         var startingDate = this.range.startTime;
-        return new common_1.DatePipe(undefined).transform(startingDate, this.formatDayTitle);
+        return new DatePipe(undefined).transform(startingDate, this.formatDayTitle);
     };
     DayViewComponent.compareEventByStartOffset = function (eventA, eventB) {
         return eventA.startOffset - eventB.startOffset;
@@ -291,30 +290,29 @@ var DayViewComponent = (function () {
         this.onEventSelected.emit(event);
     };
     DayViewComponent.decorators = [
-        { type: core_1.Component, args: [{
+        { type: Component, args: [{
                     selector: 'dayview',
                     template: "\n            <ion-slides #daySlider [options]=\"slideOption\" (ionDidChange)=\"onSlideChanged()\">\n                <ion-slide *ngFor=\"let view of views; let viewIndex=index\">\n                    <div class=\"dayview-allday-table\">\n                        <div class=\"dayview-allday-label\">{{allDayLabel}}</div>\n                        <ion-scroll scrollY=\"true\" zoom=\"false\" class=\"dayview-allday-content-wrapper\">\n                            <table class=\"table table-bordered dayview-allday-content-table\">\n                                <tbody>\n                                <tr>\n                                    <td class=\"calendar-cell\" [ngClass]=\"{'calendar-event-wrap':view.allDayEvents.length>0}\"\n                                        [ngStyle]=\"{height: 25*view.allDayEvents.length+'px'}\"\n                                        *ngIf=\"viewIndex===currentViewIndex\">\n                                        <div *ngFor=\"let displayEvent of view.allDayEvents; let eventIndex=index\"\n                                             class=\"calendar-event\"\n                                             (click)=\"eventSelected(displayEvent.event)\"\n                                             [ngStyle]=\"{top: 25*eventIndex+'px',width: '100%',height:'25px'}\">\n                                            <div class=\"calendar-event-inner\">{{displayEvent.event.title}}</div>\n                                        </div>\n                                    </td>\n                                    <td class=\"calendar-cell\" *ngIf=\"viewIndex!==currentViewIndex\">\n                                    </td>\n                                </tr>\n                                </tbody>\n                            </table>\n                        </ion-scroll>\n                    </div>\n                    <ion-scroll scrollY=\"true\" class=\"dayview-normal-event-container\">\n                        <table class=\"table table-bordered table-fixed dayview-normal-event-table\"\n                               *ngIf=\"viewIndex===currentViewIndex\">\n                            <tbody>\n                            <tr *ngFor=\"let tm of view.rows\">\n                                <td class=\"calendar-hour-column text-center\">\n                                    {{tm.time | date: formatHourColumn}}\n                                </td>\n                                <td class=\"calendar-cell\" (click)=\"select(tm.time, tm.events)\">\n                                    <div [ngClass]=\"{'calendar-event-wrap': tm.events}\" *ngIf=\"tm.events\">\n                                        <div *ngFor=\"let displayEvent of tm.events\" class=\"calendar-event\"\n                                             (click)=\"eventSelected(displayEvent.event)\"\n                                             [ngStyle]=\"{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}\">\n                                            <div class=\"calendar-event-inner\">{{displayEvent.event.title}}</div>\n                                        </div>\n                                    </div>\n                                </td>\n                            </tr>\n                            </tbody>\n                        </table>\n                        <table class=\"table table-bordered table-fixed dayview-normal-event-table\"\n                               *ngIf=\"viewIndex!==currentViewIndex\">\n                            <tbody>\n                            <tr *ngFor=\"let tm of view.rows\">\n                                <td class=\"calendar-hour-column text-center\">\n                                    {{tm.time | date: formatHourColumn}}\n                                </td>\n                                <td class=\"calendar-cell\">\n                                </td>\n                            </tr>\n                            </tbody>\n                        </table>\n                    </ion-scroll>\n                </ion-slide>\n            </ion-slides>\n    ",
                     styles: ["\n        .table-fixed {\n          table-layout: fixed;\n        }\n\n        .table {\n          width: 100%;\n          max-width: 100%;\n          background-color: transparent;\n        }\n\n        .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td,\n        .table > tbody > tr > td, .table > tfoot > tr > td {\n          padding: 8px;\n          line-height: 20px;\n          vertical-align: top;\n        }\n\n        .table > thead > tr > th {\n          vertical-align: bottom;\n          border-bottom: 2px solid #ddd;\n        }\n\n        .table > thead:first-child > tr:first-child > th, .table > thead:first-child > tr:first-child > td {\n          border-top: 0\n        }\n\n        .table > tbody + tbody {\n          border-top: 2px solid #ddd;\n        }\n\n        .table-bordered {\n          border: 1px solid #ddd;\n        }\n\n        .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th,\n        .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {\n          border: 1px solid #ddd;\n        }\n\n        .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {\n          border-bottom-width: 2px;\n        }\n\n        .table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {\n          background-color: #f9f9f9\n        }\n\n        .calendar-hour-column {\n          width: 50px;\n          white-space: nowrap;\n        }\n\n        .calendar-event-wrap {\n          position: relative;\n          width: 100%;\n          height: 100%;\n        }\n\n        .calendar-event {\n          position: absolute;\n          padding: 2px;\n          cursor: pointer;\n          z-index: 10000;\n        }\n\n        .calendar-event-inner {\n          overflow: hidden;\n          background-color: #3a87ad;\n          color: white;\n          height: 100%;\n          width: 100%;\n          padding: 2px;\n          line-height: 15px;\n        }\n\n        .calendar-cell {\n          padding: 0 !important;\n          height: 37px;\n        }\n\n        .dayview-allday-label {\n          float: left;\n          height: 100%;\n          line-height: 50px;\n          text-align: center;\n          width: 50px;\n        }\n\n        .dayview-allday-content-wrapper {\n          margin-left: 50px;\n          overflow: hidden;\n          height: 51px;\n        }\n\n        .dayview-allday-content-table {\n          min-height: 50px;\n        }\n\n        .dayview-allday-content-table td {\n          border-left: 1px solid #ddd;\n          border-right: 1px solid #ddd;\n        }\n\n        .dayview {\n          height: 100%;\n        }\n\n        .dayview-allday-table {\n          height: 50px;\n          position: relative;\n          border-bottom: 1px solid #ddd;\n          font-size: 14px;\n        }\n\n        .dayview-normal-event-container {\n          margin-top: 50px;\n          overflow: hidden;\n          left: 0;\n          right: 0;\n          top: 0;\n          bottom: 0;\n          position: absolute;\n          font-size: 14px;\n        }\n\n        .dayview .slide-zoom {\n          height: 100%;\n        }\n\n        .dayview-allday-content-wrapper scroll-content {\n          width: 100%;\n        }\n\n        ::-webkit-scrollbar,\n        *::-webkit-scrollbar {\n          display: none;\n        }\n\n        .table > tbody > tr > td.calendar-hour-column {\n          padding-left: 0;\n          padding-right: 0;\n          vertical-align: middle;\n        }\n\n        @media (max-width: 750px) {\n          .dayview-allday-label, .calendar-hour-column {\n            width: 31px;\n            font-size: 12px;\n          }\n\n          .dayview-allday-label {\n            padding-top: 4px;\n          }\n\n          .table > tbody > tr > td.calendar-hour-column {\n            padding-left: 0;\n            padding-right: 0;\n            vertical-align: middle;\n            line-height: 12px;\n          }\n\n          .dayview-allday-label {\n            line-height: 20px;\n          }\n\n          .dayview-allday-content-wrapper {\n            margin-left: 31px;\n          }\n\n          .calendar-event-inner {\n            font-size: 12px;\n          }\n        }\n    "],
-                    encapsulation: core_1.ViewEncapsulation.None
+                    encapsulation: ViewEncapsulation.None
                 },] },
     ];
     DayViewComponent.ctorParameters = [
-        { type: calendar_service_1.CalendarService, },
+        { type: CalendarService, },
     ];
     DayViewComponent.propDecorators = {
-        'slider': [{ type: core_1.ViewChild, args: ['daySlider',] },],
-        'class': [{ type: core_1.HostBinding, args: ['class.dayview',] },],
-        'formatHourColumn': [{ type: core_1.Input },],
-        'formatDayTitle': [{ type: core_1.Input },],
-        'allDayLabel': [{ type: core_1.Input },],
-        'hourParts': [{ type: core_1.Input },],
-        'eventSource': [{ type: core_1.Input },],
-        'onRangeChanged': [{ type: core_1.Output },],
-        'onEventSelected': [{ type: core_1.Output },],
-        'onTimeSelected': [{ type: core_1.Output },],
-        'onTitleChanged': [{ type: core_1.Output },],
+        'slider': [{ type: ViewChild, args: ['daySlider',] },],
+        'class': [{ type: HostBinding, args: ['class.dayview',] },],
+        'formatHourColumn': [{ type: Input },],
+        'formatDayTitle': [{ type: Input },],
+        'allDayLabel': [{ type: Input },],
+        'hourParts': [{ type: Input },],
+        'eventSource': [{ type: Input },],
+        'onRangeChanged': [{ type: Output },],
+        'onEventSelected': [{ type: Output },],
+        'onTimeSelected': [{ type: Output },],
+        'onTitleChanged': [{ type: Output },],
     };
     return DayViewComponent;
 }());
-exports.DayViewComponent = DayViewComponent;
 //# sourceMappingURL=dayview.js.map

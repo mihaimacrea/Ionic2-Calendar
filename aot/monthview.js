@@ -1,14 +1,13 @@
-"use strict";
-var core_1 = require('@angular/core');
-var common_1 = require('@angular/common');
-var calendar_service_1 = require('./calendar.service');
-var MonthViewComponent = (function () {
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { CalendarService } from './calendar.service';
+export var MonthViewComponent = (function () {
     function MonthViewComponent(calendarService) {
         this.calendarService = calendarService;
-        this.onRangeChanged = new core_1.EventEmitter();
-        this.onEventSelected = new core_1.EventEmitter();
-        this.onTimeSelected = new core_1.EventEmitter();
-        this.onTitleChanged = new core_1.EventEmitter();
+        this.onRangeChanged = new EventEmitter();
+        this.onEventSelected = new EventEmitter();
+        this.onTimeSelected = new EventEmitter();
+        this.onTitleChanged = new EventEmitter();
         this.slideOption = {
             runCallbacksOnInit: false,
             loop: true
@@ -74,7 +73,7 @@ var MonthViewComponent = (function () {
         return {
             date: date,
             events: [],
-            label: new common_1.DatePipe('en-US').transform(date, format),
+            label: new DatePipe('en-US').transform(date, format),
             secondary: false
         };
     };
@@ -240,7 +239,7 @@ var MonthViewComponent = (function () {
     };
     MonthViewComponent.prototype.getTitle = function () {
         var currentViewStartDate = this.range.startTime, date = currentViewStartDate.getDate(), month = (currentViewStartDate.getMonth() + (date !== 1 ? 1 : 0)) % 12, year = currentViewStartDate.getFullYear() + (date !== 1 && month === 0 ? 1 : 0), headerDate = new Date(year, month, 1);
-        return new common_1.DatePipe(undefined).transform(headerDate, this.formatMonthTitle);
+        return new DatePipe(undefined).transform(headerDate, this.formatMonthTitle);
     };
     MonthViewComponent.prototype.compareEvent = function (event1, event2) {
         if (event1.allDay) {
@@ -315,30 +314,29 @@ var MonthViewComponent = (function () {
         this.onEventSelected.emit(event);
     };
     MonthViewComponent.decorators = [
-        { type: core_1.Component, args: [{
+        { type: Component, args: [{
                     selector: 'monthview',
                     template: "\n        <div>\n            <ion-slides #monthSlider [options]=\"slideOption\" (ionDidChange)=\"onSlideChanged()\">\n                <ion-slide *ngFor=\"let view of views; let viewIndex=index\">\n                    <table *ngIf=\"viewIndex===currentViewIndex\" class=\"table table-bordered table-fixed monthview-datetable\">\n                        <thead>\n                        <tr>\n                            <th *ngFor=\"let day of view.dates.slice(0,7)\">\n                                <small>{{day.date | date: formatDayHeader}}</small>\n                            </th>\n                        </tr>\n                        </thead>\n                        <tbody>\n                        <tr *ngFor=\"let row of [0,1,2,3,4,5]\">\n                            <td *ngFor=\"let col of [0,1,2,3,4,5,6]\" (click)=\"select(view.dates[row*7+col].date, view.dates[row*7+col].events)\"\n                                [ngClass]=\"getHighlightClass(view.dates[row*7+col])\">{{view.dates[row*7+col].label}}\n                            </td>\n                        </tr>\n                        </tbody>\n                    </table>\n                    <table *ngIf=\"viewIndex!==currentViewIndex\" class=\"table table-bordered table-fixed monthview-datetable\">\n                        <thead>\n                        <tr class=\"text-center\">\n                            <th *ngFor=\"let day of view.dates.slice(0,7)\">\n                                <small>{{day.date | date: formatDayHeader}}</small>\n                            </th>\n                        </tr>\n                        </thead>\n                        <tbody>\n                        <tr *ngFor=\"let row of [0,1,2,3,4,5]\">\n                            <td *ngFor=\"let col of [0,1,2,3,4,5,6]\">\n                                {{view.dates[row*7+col].label}}\n                            </td>\n                        <tr>\n                        </tbody>\n                    </table>\n                </ion-slide>\n            </ion-slides>\n            <ion-list class=\"event-detail-container2\" has-bouncing=\"false\" *ngIf=\"showEventDetail\" overflow-scroll=\"false\">\n                <ion-item *ngFor=\"let event of selectedDate?.events\" (click)=\"eventSelected(event)\">\n                        <span *ngIf=\"!event.allDay\" class=\"monthview-eventdetail-timecolumn\">{{event.startTime|date: 'HH:mm'}}\n                            -\n                            {{event.endTime|date: 'HH:mm'}}\n                        </span>\n                    <span *ngIf=\"event.allDay\" class=\"monthview-eventdetail-timecolumn\">All day</span>\n                    <span class=\"event-detail\">  |  {{event.title}}</span>\n                </ion-item>\n                <ion-item *ngIf=\"!selectedDate?.events\">\n                    <td class=\"no-events-label\">{{noEventsLabel}}</td>\n                </ion-item>\n            </ion-list>\n        </div>\n    ",
                     styles: ["\n        .text-muted {\n          color: #999;\n        }\n\n        .table-fixed {\n          table-layout: fixed;\n        }\n\n        .table {\n          width: 100%;\n          max-width: 100%;\n          background-color: transparent;\n        }\n\n        .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td,\n        .table > tbody > tr > td, .table > tfoot > tr > td {\n          padding: 8px;\n          line-height: 20px;\n          vertical-align: top;\n        }\n\n        .table > thead > tr > th {\n          vertical-align: bottom;\n          border-bottom: 2px solid #ddd;\n        }\n\n        .table > thead:first-child > tr:first-child > th, .table > thead:first-child > tr:first-child > td {\n          border-top: 0\n        }\n\n        .table > tbody + tbody {\n          border-top: 2px solid #ddd;\n        }\n\n        .table-bordered {\n          border: 1px solid #ddd;\n        }\n\n        .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th,\n        .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {\n          border: 1px solid #ddd;\n        }\n\n        .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {\n          border-bottom-width: 2px;\n        }\n\n        .table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {\n          background-color: #f9f9f9\n        }\n\n        .no-event-label {\n          font-weight: bold;\n          color: darkgrey;\n          text-align: center;\n        }\n\n        .event-detail-container {\n          border-top: 2px darkgrey solid;\n          margin-top: 262px;\n        }\n\n        .event-detail {\n          cursor: pointer;\n          white-space: nowrap;\n          text-overflow: ellipsis;\n        }\n\n        .monthview-primary-with-event {\n          background-color: #3a87ad;\n          color: white;\n        }\n\n        .monthview-current {\n          background-color: lightgrey;\n        }\n\n        .monthview-selected {\n          background-color: #009900;\n          color: white;\n        }\n\n        .monthview-eventdetail-timecolumn {\n          width: 110px;\n          overflow: hidden;\n        }\n\n        .monthview-datetable th {\n          text-align: center;\n        }\n\n        .monthview-datetable td {\n          cursor: pointer;\n          text-align: center;\n        }\n\n        .monthview-secondary-with-event {\n          background-color: #d9edf7;\n        }\n\n        ::-webkit-scrollbar,\n        *::-webkit-scrollbar {\n          display: none;\n        }\n\n        @media (max-width: 750px) {\n          .table > tbody > tr > td.calendar-hour-column {\n            padding-left: 0;\n            padding-right: 0;\n            vertical-align: middle;\n            line-height: 12px;\n          }\n        }\n    "]
                 },] },
     ];
     MonthViewComponent.ctorParameters = [
-        { type: calendar_service_1.CalendarService, },
+        { type: CalendarService, },
     ];
     MonthViewComponent.propDecorators = {
-        'slider': [{ type: core_1.ViewChild, args: ['monthSlider',] },],
-        'formatDay': [{ type: core_1.Input },],
-        'formatDayHeader': [{ type: core_1.Input },],
-        'formatMonthTitle': [{ type: core_1.Input },],
-        'eventSource': [{ type: core_1.Input },],
-        'startingDayMonth': [{ type: core_1.Input },],
-        'showEventDetail': [{ type: core_1.Input },],
-        'noEventsLabel': [{ type: core_1.Input },],
-        'onRangeChanged': [{ type: core_1.Output },],
-        'onEventSelected': [{ type: core_1.Output },],
-        'onTimeSelected': [{ type: core_1.Output },],
-        'onTitleChanged': [{ type: core_1.Output },],
+        'slider': [{ type: ViewChild, args: ['monthSlider',] },],
+        'formatDay': [{ type: Input },],
+        'formatDayHeader': [{ type: Input },],
+        'formatMonthTitle': [{ type: Input },],
+        'eventSource': [{ type: Input },],
+        'startingDayMonth': [{ type: Input },],
+        'showEventDetail': [{ type: Input },],
+        'noEventsLabel': [{ type: Input },],
+        'onRangeChanged': [{ type: Output },],
+        'onEventSelected': [{ type: Output },],
+        'onTimeSelected': [{ type: Output },],
+        'onTitleChanged': [{ type: Output },],
     };
     return MonthViewComponent;
 }());
-exports.MonthViewComponent = MonthViewComponent;
 //# sourceMappingURL=monthview.js.map

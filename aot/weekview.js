@@ -1,15 +1,14 @@
-"use strict";
-var common_1 = require('@angular/common');
-var core_1 = require('@angular/core');
-var calendar_service_1 = require('./calendar.service');
-var WeekViewComponent = (function () {
+import { DatePipe } from '@angular/common';
+import { Component, HostBinding, Input, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core';
+import { CalendarService } from './calendar.service';
+export var WeekViewComponent = (function () {
     function WeekViewComponent(calendarService) {
         this.calendarService = calendarService;
         this.class = true;
-        this.onRangeChanged = new core_1.EventEmitter();
-        this.onEventSelected = new core_1.EventEmitter();
-        this.onTimeSelected = new core_1.EventEmitter();
-        this.onTitleChanged = new core_1.EventEmitter();
+        this.onRangeChanged = new EventEmitter();
+        this.onEventSelected = new EventEmitter();
+        this.onTimeSelected = new EventEmitter();
+        this.onTitleChanged = new EventEmitter();
         this.slideOption = {
             runCallbacksOnInit: false,
             loop: true
@@ -259,7 +258,7 @@ var WeekViewComponent = (function () {
         this.calendarService.rangeChanged(this);
     };
     WeekViewComponent.prototype.getTitle = function () {
-        var firstDayOfWeek = this.range.startTime, weekFormat = '$n', weekNumberIndex = this.formatWeekTitle.indexOf(weekFormat), title = new common_1.DatePipe(undefined).transform(firstDayOfWeek, this.formatWeekTitle);
+        var firstDayOfWeek = this.range.startTime, weekFormat = '$n', weekNumberIndex = this.formatWeekTitle.indexOf(weekFormat), title = new DatePipe(undefined).transform(firstDayOfWeek, this.formatWeekTitle);
         if (weekNumberIndex !== -1) {
             var weekNumber = String(WeekViewComponent.getISO8601WeekNumber(firstDayOfWeek));
             title = title.replace(weekFormat, weekNumber);
@@ -382,32 +381,31 @@ var WeekViewComponent = (function () {
         this.onEventSelected.emit(event);
     };
     WeekViewComponent.decorators = [
-        { type: core_1.Component, args: [{
+        { type: Component, args: [{
                     selector: 'weekview',
                     template: "\n            <ion-slides #weekSlider [options]=\"slideOption\" (ionDidChange)=\"onSlideChanged()\">\n                <ion-slide *ngFor=\"let view of views; let viewIndex=index\">\n                    <table class=\"table table-bordered table-fixed weekview-header\">\n                        <thead>\n                        <tr>\n                            <th class=\"calendar-hour-column\"></th>\n                            <th class=\"weekview-header text-center\" *ngFor=\"let dt of view.dates\">{{dt.date|date:\n                                formatWeekViewDayHeader}}\n                            </th>\n                        </tr>\n                        </thead>\n                    </table>\n                    <div *ngIf=\"viewIndex===currentViewIndex\">\n                        <div class=\"weekview-allday-table\">\n                            <div class=\"weekview-allday-label\">{{allDayLabel}}</div>\n                            <ion-scroll scrollY=\"true\" class=\"weekview-allday-content-wrapper\" zoom=\"false\">\n                                <table class=\"table table-fixed weekview-allday-content-table\">\n                                    <tbody>\n                                    <tr>\n                                        <td *ngFor=\"let day of view.dates\" class=\"calendar-cell\">\n                                            <div [ngClass]=\"{'calendar-event-wrap': day.events}\" *ngIf=\"day.events\"\n                                                 [ngStyle]=\"{height: 25*day.events.length+'px'}\">\n                                                <div *ngFor=\"let displayEvent of day.events\" class=\"calendar-event\"\n                                                     (click)=\"eventSelected(displayEvent.event)\"\n                                                     [ngStyle]=\"{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}\">\n                                                    <div class=\"calendar-event-inner\">{{displayEvent.event.title}}</div>\n                                                </div>\n                                            </div>\n                                        </td>\n                                    </tr>\n                                    </tbody>\n                                </table>\n                            </ion-scroll>\n                        </div>\n                        <ion-scroll scrollY=\"true\" class=\"weekview-normal-event-container\" zoom=\"false\">\n                            <table class=\"table table-bordered table-fixed weekview-normal-event-table\">\n                                <tbody>\n                                <tr *ngFor=\"let row of view.rows\">\n                                    <td class=\"calendar-hour-column text-center\">\n                                        {{row[0].time | date: formatHourColumn}}\n                                    </td>\n                                    <td *ngFor=\"let tm of row\" class=\"calendar-cell\" (click)=\"select(tm.time, tm.events)\">\n                                        <div [ngClass]=\"{'calendar-event-wrap': tm.events}\" *ngIf=\"tm.events\">\n                                            <div *ngFor=\"let displayEvent of tm.events\" class=\"calendar-event\"\n                                                 (click)=\"eventSelected(displayEvent.event)\"\n                                                 [ngStyle]=\"{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}\">\n                                                <div class=\"calendar-event-inner\">{{displayEvent.event.title}}</div>\n                                            </div>\n                                        </div>\n                                    </td>\n                                </tr>\n                                </tbody>\n                            </table>\n                        </ion-scroll>\n                    </div>\n                    <div *ngIf=\"viewIndex!==currentViewIndex\">\n                        <div class=\"weekview-allday-table\">\n                            <div class=\"weekview-allday-label\">{{allDayLabel}}</div>\n                            <ion-scroll scrollY=\"true\" class=\"weekview-allday-content-wrapper\" zoom=\"false\">\n                                <table class=\"table table-fixed weekview-allday-content-table\">\n                                    <tbody>\n                                    <tr>\n                                        <td *ngFor=\"let day of views[1].dates\" class=\"calendar-cell\">\n                                        </td>\n                                    </tr>\n                                    </tbody>\n                                </table>\n                            </ion-scroll>\n                        </div>\n                        <ion-scroll scrollY=\"true\" class=\"weekview-normal-event-container\" zoom=\"false\">\n                            <table class=\"table table-bordered table-fixed weekview-normal-event-table\">\n                                <tbody>\n                                <tr *ngFor=\"let row of views[1].rows\">\n                                    <td class=\"calendar-hour-column text-center\">\n                                        {{row[0].time | date: formatHourColumn}}\n                                    </td>\n                                    <td *ngFor=\"let tm of row\" class=\"calendar-cell\">\n                                    </td>\n                                </tr>\n                                </tbody>\n                            </table>\n                        </ion-scroll>\n                    </div>\n                </ion-slide>\n            </ion-slides>\n    ",
                     styles: ["\n        .table-fixed {\n          table-layout: fixed;\n        }\n\n        .table {\n          width: 100%;\n          max-width: 100%;\n          background-color: transparent;\n        }\n\n        .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td,\n        .table > tbody > tr > td, .table > tfoot > tr > td {\n          padding: 8px;\n          line-height: 20px;\n          vertical-align: top;\n        }\n\n        .table > thead > tr > th {\n          vertical-align: bottom;\n          border-bottom: 2px solid #ddd;\n        }\n\n        .table > thead:first-child > tr:first-child > th, .table > thead:first-child > tr:first-child > td {\n          border-top: 0\n        }\n\n        .table > tbody + tbody {\n          border-top: 2px solid #ddd;\n        }\n\n        .table-bordered {\n          border: 1px solid #ddd;\n        }\n\n        .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th,\n        .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {\n          border: 1px solid #ddd;\n        }\n\n        .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {\n          border-bottom-width: 2px;\n        }\n\n        .table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {\n          background-color: #f9f9f9\n        }\n\n        .calendar-hour-column {\n          width: 50px;\n          white-space: nowrap;\n        }\n\n        .calendar-event-wrap {\n          position: relative;\n          width: 100%;\n          height: 100%;\n        }\n\n        .calendar-event {\n          position: absolute;\n          padding: 2px;\n          cursor: pointer;\n          z-index: 10000;\n        }\n\n        .calendar-event-inner {\n          overflow: hidden;\n          background-color: #3a87ad;\n          color: white;\n          height: 100%;\n          width: 100%;\n          padding: 2px;\n          line-height: 15px;\n        }\n\n        .calendar-cell {\n          padding: 0 !important;\n          height: 37px;\n        }\n\n        .weekview-allday-label {\n          float: left;\n          height: 100%;\n          line-height: 50px;\n          text-align: center;\n          width: 50px;\n        }\n\n        .weekview-allday-content-wrapper {\n          margin-left: 50px;\n          overflow: hidden;\n          height: 51px;\n        }\n\n        .weekview-allday-content-table {\n          min-height: 50px;\n        }\n\n        .weekview-allday-content-table td {\n          border-left: 1px solid #ddd;\n          border-right: 1px solid #ddd;\n        }\n\n        .weekview {\n          height: 100%;\n        }\n\n        .weekview-header th {\n          overflow: hidden;\n          white-space: nowrap;\n          font-size: 14px;\n        }\n\n        .weekview-allday-table {\n          height: 50px;\n          position: relative;\n          border-bottom: 1px solid #ddd;\n          font-size: 14px;\n        }\n\n        .weekview-normal-event-container {\n          margin-top: 87px;\n          overflow: hidden;\n          left: 0;\n          right: 0;\n          top: 0;\n          bottom: 0;\n          position: absolute;\n          font-size: 14px;\n        }\n\n        .weekview .slide-zoom {\n          height: 100%;\n        }\n\n        .weekview-allday-content-wrapper scroll-content {\n          width: 100%;\n        }\n\n        ::-webkit-scrollbar,\n        *::-webkit-scrollbar {\n          display: none;\n        }\n\n        .table > tbody > tr > td.calendar-hour-column {\n          padding-left: 0;\n          padding-right: 0;\n          vertical-align: middle;\n        }\n\n        @media (max-width: 750px) {\n          .weekview-allday-label, .calendar-hour-column {\n            width: 31px;\n            font-size: 12px;\n          }\n\n          .weekview-allday-label {\n            padding-top: 4px;\n          }\n\n          .table > tbody > tr > td.calendar-hour-column {\n            padding-left: 0;\n            padding-right: 0;\n            vertical-align: middle;\n            line-height: 12px;\n          }\n\n          .table > thead > tr > th.weekview-header {\n            padding-left: 0;\n            padding-right: 0;\n            font-size: 12px;\n          }\n\n          .weekview-allday-label {\n            line-height: 20px;\n          }\n\n          .weekview-allday-content-wrapper {\n            margin-left: 31px;\n          }\n\n          .calendar-event-inner {\n            font-size: 12px;\n          }\n        }\n    "],
-                    encapsulation: core_1.ViewEncapsulation.None
+                    encapsulation: ViewEncapsulation.None
                 },] },
     ];
     WeekViewComponent.ctorParameters = [
-        { type: calendar_service_1.CalendarService, },
+        { type: CalendarService, },
     ];
     WeekViewComponent.propDecorators = {
-        'slider': [{ type: core_1.ViewChild, args: ['weekSlider',] },],
-        'class': [{ type: core_1.HostBinding, args: ['class.weekview',] },],
-        'formatWeekTitle': [{ type: core_1.Input },],
-        'formatWeekViewDayHeader': [{ type: core_1.Input },],
-        'formatHourColumn': [{ type: core_1.Input },],
-        'startingDayWeek': [{ type: core_1.Input },],
-        'allDayLabel': [{ type: core_1.Input },],
-        'hourParts': [{ type: core_1.Input },],
-        'eventSource': [{ type: core_1.Input },],
-        'onRangeChanged': [{ type: core_1.Output },],
-        'onEventSelected': [{ type: core_1.Output },],
-        'onTimeSelected': [{ type: core_1.Output },],
-        'onTitleChanged': [{ type: core_1.Output },],
+        'slider': [{ type: ViewChild, args: ['weekSlider',] },],
+        'class': [{ type: HostBinding, args: ['class.weekview',] },],
+        'formatWeekTitle': [{ type: Input },],
+        'formatWeekViewDayHeader': [{ type: Input },],
+        'formatHourColumn': [{ type: Input },],
+        'startingDayWeek': [{ type: Input },],
+        'allDayLabel': [{ type: Input },],
+        'hourParts': [{ type: Input },],
+        'eventSource': [{ type: Input },],
+        'onRangeChanged': [{ type: Output },],
+        'onEventSelected': [{ type: Output },],
+        'onTimeSelected': [{ type: Output },],
+        'onTitleChanged': [{ type: Output },],
     };
     return WeekViewComponent;
 }());
-exports.WeekViewComponent = WeekViewComponent;
 //# sourceMappingURL=weekview.js.map
